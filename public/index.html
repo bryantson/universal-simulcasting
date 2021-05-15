@@ -1,0 +1,161 @@
+<!doctype>
+<script src="flv.min.js"></script>
+
+<html ng-app>
+<head>
+	<title>T-Mobile Hackathon 2021</title>
+	
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+	<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="stylesheets/style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+	<script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="d-flex flex-column h-100">
+
+	<header>
+		<!-- Fixed navbar -->
+		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+		  <div class="container-fluid">
+			<a class="navbar-brand" href="#">GachiGachi.TV</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+			  <ul class="navbar-nav me-auto mb-2 mb-md-0">
+				<li class="nav-item">
+				  <a class="nav-link active" aria-current="page" href="#">Home</a>
+				</li>
+				<li class="nav-item">
+				  <a class="nav-link" href="#">Link</a>
+				</li>
+				<li class="nav-item">
+				  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+				</li>
+			  </ul>
+			  <form class="d-flex">
+				<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+				<button class="btn btn-outline-success" type="submit">Search</button>
+			  </form>
+			</div>
+		  </div>
+		</nav>
+	  </header>
+<main class="flex-shrink-0" style="margin-top:100px;">
+<div class="container">
+	<div class="row mb-3">
+		<div class="col-md-8 themed-grid-col">
+			<h1>
+				Broadcast Yourself to the World!
+				</h1>
+				
+
+				<button type="button" class="btn btn-primary" id="broadcast-button">
+					<i class="fa fa-video-camera"></i>Stop Broadcasting
+				</button>
+
+			
+				
+				<hr/>
+				<div class="videos__group">
+					<div id="video-grid">
+			
+					</div>
+				  </div>
+
+			
+				<hr/>
+
+
+	</div>
+	<div class="col-md-4 themed-grid-col">
+		<h1>Live Chat</h1>
+		
+		<form id="form" action="">
+			<input id="input" autocomplete="off" /><button>Send</button>
+
+		</form>
+
+		<ul id="messages"></ul>
+
+		<ul></ul>
+	</div>
+
+
+</div>
+</main>
+
+<script>
+var socket = io();
+
+var form = document.getElementById('form');
+var input = document.getElementById('input');
+var messages = document.getElementById('messages');
+
+
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (input.value) {
+      socket.emit('chat message', input.value);
+      input.value = '';
+    }
+  });
+
+  socket.on('chat message', function(msg) {
+    var item = document.createElement('li');
+    item.textContent = msg;
+    messages.appendChild(item);
+    window.scrollTo(0, document.body.scrollHeight);
+  });
+
+let myVideoStream;
+const videoGrid = document.getElementById("video-grid");
+const myVideo = document.createElement("video");
+myVideo.muted = true;
+
+const constraints = {
+    'video': true,
+    'audio': true
+}
+
+navigator.mediaDevices.getUserMedia(constraints)
+.then((stream) => {
+	console.log("Listen:" + JSON.stringify(constraints));
+    myVideoStream = stream;
+    addVideoStream(myVideo, stream);
+});
+
+const addVideoStream = (video, stream) => {
+    video.srcObject = stream;
+    video.addEventListener("loadedmetadata", () => {
+       video.play();
+       videoGrid.append(video);
+    });
+};
+
+const videoControl = document.querySelector("#broadcast-button");
+
+videoControl.addEventListener("click", () => {
+  const enabled = myVideoStream.getVideoTracks()[0].enabled;
+  if (enabled) {
+    myVideoStream.getVideoTracks()[0].enabled = false;
+
+    videoControl.classList.remove("btn-primary");
+	videoControl.classList.add("btn-danger");
+	videoControl.innerHTML="Start Broadcast";
+  //  stopVideo.innerHTML = html;
+  } else {
+    myVideoStream.getVideoTracks()[0].enabled = true;
+
+  	videoControl.classList.remove("btn-danger");
+	videoControl.classList.add("btn-primary");
+	videoControl.innerHTML="Stop Broadcast";
+
+
+  }
+});
+
+	</script>
+</body>
+</html>
