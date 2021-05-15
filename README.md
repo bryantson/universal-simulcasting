@@ -1,6 +1,6 @@
 # Universal Simulcasting Platform
 
-> This was developed as a part of T-Mobile 2021 Hackathon. See the video submission [here](https://youtu.be/TR-pAaq4l3w).
+> This was developed as a part of T-Mobile 2021 Hackathon. See the [DevPost Submission](https://devpost.com/software/simulcasating) and [video submission](https://youtu.be/TR-pAaq4l3w) 
 
 ![App Interface](./images/coverOverview.jpg)
 
