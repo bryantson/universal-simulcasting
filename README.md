@@ -4,6 +4,8 @@
 
 ![App Interface](./images/coverOverview.jpg)
 
+Azure Media Service integration is still left to be desired.
+
 ## Overview
 
 The vision for this **Universal Simulcating Platform** will present an user with an interface where a **streamer** can click a button to stream to multiple live stream endpoints, which can be Youtube, Facebook, Twitch, Vimeo, etc.
